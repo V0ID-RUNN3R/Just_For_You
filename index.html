@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffe6e6; /* Light pink background */
+            overflow: hidden; /* Prevents scrollbars when button gets huge */
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            color: #ff4d4d;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .gif-container img {
+            max-width: 300px;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center; /* Keeps buttons aligned as one grows */
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        #yesBtn {
+            background-color: #28a745; /* Green */
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        #noBtn {
+            background-color: #dc3545; /* Red */
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        #noBtn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="gif-container" id="gifContainer">
+            <img id="mainImage" src="https://media.tenor.com/K2sE98y8tC0AAAAi/mocha-bear-hearts.gif" alt="Cute bear">
+        </div>
+        
+        <h1 id="question"> Lara, will you be my Valentine?</h1>
+        
+        <div class="btn-container">
+            <button id="yesBtn" onclick="handleYes()">Yes</button>
+            <button id="noBtn" onclick="handleNo()">No</button>
+        </div>
+    </div>
+
+    <script>
+        const question = document.getElementById("question");
+        const gifContainer = document.getElementById("gifContainer");
+        const mainImage = document.getElementById("mainImage");
+        const yesBtn = document.getElementById("yesBtn");
+        const noBtn = document.getElementById("noBtn");
+
+        let noClickCount = 0;
+        
+        // Phrases to cycle through when they click No
+        const noPhrases = [
+            "No", 
+            "Are you sure?", 
+            "Really sure?", 
+            "Think again!", 
+            "Last chance!", 
+            "Surely not?", 
+            "You might regret this!", 
+            "Give it another thought!", 
+            "Are you absolutely certain?", 
+            "This could be a mistake!", 
+            "Have a heart!", 
+            "Don't be so cold!", 
+            "Change of heart?", 
+            "Wouldn't you reconsider?", 
+            "Is that your final answer?", 
+            "You're breaking my heart ;(", 
+            "Plsss? :(", 
+            "Okay, I'll stop asking...", 
+            "Just kidding, please say yes", 
+            "I'll be very sad", 
+            "I'll be very very sad"
+        ];
+
+        function handleNo() {
+            noClickCount++;
+            
+            // Change text on the No button
+            // If we run out of phrases, loop the last one or keep cycling
+            const textIndex = Math.min(noClickCount, noPhrases.length - 1);
+            noBtn.innerText = noPhrases[textIndex];
+
+            // Make the Yes button bigger
+            const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+            yesBtn.style.fontSize = `${currentSize * 1.5}px`;
+            
+            // Optionally increase padding to match text size
+            const currentPadding = parseFloat(window.getComputedStyle(yesBtn).padding);
+            yesBtn.style.padding = `${currentPadding * 1.2}px ${currentPadding * 1.2}px`;
+        }
+
+        function handleYes() {
+            // Change the visual to the "Success" state
+            question.innerText = "Yay! I love you! ❤️";
+            
+            // Change image to kissing/happy bears
+            mainImage.src = "https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif";
+            
+            // Hide the buttons
+            document.querySelector('.btn-container').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
