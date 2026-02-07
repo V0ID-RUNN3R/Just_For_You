@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>For Lara ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -19,6 +19,8 @@
             background: linear-gradient(135deg, #ffe6e6 0%, #ffc3c3 100%);
             overflow: hidden;
             position: relative;
+            /* Prevent bounce scrolling on mobile */
+            overscroll-behavior: none;
         }
 
         /* --- Login Screen Styles --- */
@@ -35,7 +37,9 @@
             justify-content: center;
             align-items: center;
             color: white;
-            transition: opacity 0.5s ease;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
         }
 
         #login-overlay input {
@@ -46,22 +50,19 @@
             outline: none;
             margin: 20px 0;
             text-align: center;
-            width: 200px;
+            width: 80%; /* Mobile friendly width */
+            max-width: 300px;
         }
 
         #login-overlay button {
             background-color: #ff4d4d;
             color: white;
-            padding: 12px 30px;
-            font-size: 1.1rem;
+            padding: 15px 40px; /* Larger touch area */
+            font-size: 1.2rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        #login-overlay button:hover {
-            transform: scale(1.05);
+            font-weight: bold;
         }
 
         /* --- Floating Background Hearts --- */
@@ -77,7 +78,7 @@
         .heart-bg .heart-item {
             position: absolute;
             display: block;
-            font-size: 2rem;
+            font-size: 1.5rem;
             animation: floatUp 15s linear infinite;
             bottom: -100px;
             opacity: 0.7;
@@ -85,7 +86,7 @@
 
         @keyframes floatUp {
             0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
-            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
         }
 
         /* --- Main Content Container --- */
@@ -94,11 +95,14 @@
             position: relative;
             z-index: 10;
             background: rgba(255, 255, 255, 0.9);
-            padding: 40px;
+            padding: 30px 20px;
             border-radius: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            max-width: 90%;
-            width: 400px;
+            
+            /* Mobile Optimization: Fits 90% of screen but not too wide */
+            width: 90%; 
+            max-width: 400px;
+            
             backdrop-filter: blur(5px);
             display: none; /* Hidden until login */
             transition: transform 0.3s ease;
@@ -107,18 +111,18 @@
         h1 {
             color: #ff4d4d;
             font-family: 'Indie Flower', cursive;
-            font-size: 2.5rem;
+            font-size: 2.2rem; /* Slightly smaller for mobile safety */
             margin-bottom: 20px;
             line-height: 1.2;
         }
 
         .gif-container img {
             max-width: 100%;
-            width: 250px;
+            width: 220px; /* Good size for phones */
             height: auto;
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         /* --- Button Container --- */
@@ -140,6 +144,9 @@
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             font-weight: 600;
             font-family: 'Poppins', sans-serif;
+            /* Prevent text selection on mobile taps */
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         #yesBtn {
@@ -148,41 +155,34 @@
             box-shadow: 0 6px 20px rgba(255, 77, 77, 0.4);
         }
 
-        #yesBtn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(255, 77, 77, 0.5);
-        }
-
         #noBtn {
             background-color: #f8f9fa;
             color: #555;
             border: 2px solid #eee;
         }
 
-        #noBtn:hover {
-            background-color: #e2e6ea;
-        }
-
-        /* --- "Reasons Why" Button & Text --- */
+        /* --- "Reasons Why" Button --- */
         #reasonBtn {
             background-color: #fff;
             color: #ff4d4d;
             border: 2px solid #ff4d4d;
             margin-top: 15px;
-            width: 80%;
+            width: 100%; /* Full width on mobile looks better */
             font-size: 0.9rem;
+            padding: 10px;
         }
 
         #reason-display {
             margin-top: 15px;
             font-family: 'Indie Flower', cursive;
             color: #d63333;
-            font-size: 1.2rem;
-            min-height: 30px;
+            font-size: 1.3rem;
+            min-height: 40px;
             font-weight: bold;
+            line-height: 1.3;
         }
 
-        /* --- Date Planner Section (Hidden initially) --- */
+        /* --- Date Planner Section --- */
         #date-planner {
             display: none;
             margin-top: 20px;
@@ -197,13 +197,14 @@
         }
 
         select {
-            width: 80%;
-            padding: 10px;
+            width: 100%;
+            padding: 12px;
             margin: 10px 0;
             border-radius: 10px;
             border: 1px solid #ff4d4d;
             font-family: 'Poppins', sans-serif;
             background: white;
+            font-size: 1rem; /* Prevents auto-zoom on iPhone */
         }
 
         .whatsapp-btn {
@@ -211,20 +212,18 @@
             color: white;
             width: 100%;
             margin-top: 15px;
+            padding: 15px;
+            font-size: 1.2rem;
             box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
-        }
-        
-        .whatsapp-btn:hover {
-            background-color: #128C7E;
         }
     </style>
 </head>
 <body>
 
     <div id="login-overlay">
-        <h2 style="font-family: 'Indie Flower'; font-size: 2.5rem; margin-bottom: 0;">Lara's Login</h2>
-        <p style="opacity: 0.8; margin-bottom: 20px;">Enter the password to unlock my heart ❤️</p>
-        <input type="password" id="passwordInput" placeholder="Password...">
+        <h2 style="font-family: 'Indie Flower'; font-size: 2.5rem; margin-bottom: 10px;">Lara's Login</h2>
+        <p style="opacity: 0.8; margin-bottom: 20px;">Enter password to unlock ❤️</p>
+        <input type="password" id="passwordInput" placeholder="Password (Hint: 1234)">
         <button onclick="checkPassword()">Unlock</button>
         <p id="error-msg" style="color: #ff6b6b; display: none; margin-top: 10px;">Wrong password! Try "1234"</p>
     </div>
@@ -242,7 +241,7 @@
         <div class="btn-container" id="initial-buttons">
             <button id="yesBtn" onclick="handleYes()">Yes</button>
             <button id="noBtn" onclick="handleNo()">No</button>
-            <button id="reasonBtn" onclick="showReason()">✨ Click for a reason why I love you</button>
+            <button id="reasonBtn" onclick="showReason()">✨ Click for a reason why</button>
         </div>
 
         <div id="reason-display"></div>
@@ -250,20 +249,21 @@
         <div id="date-planner">
             <h3 style="color: #ff4d4d; font-family: 'Indie Flower'; margin: 0;">Plan our Date!</h3>
             
-            <label style="display:block; margin-top:15px; font-weight:bold; color:#555;">What are we eating?</label>
+            <label style="display:block; margin-top:15px; font-weight:bold; color:#555; text-align:left;">What are we eating?</label>
             <select id="food-select">
                 <option value="Sushi">🍣 Sushi</option>
                 <option value="Pizza">🍕 Pizza</option>
                 <option value="Burgers">🍔 Burgers</option>
+                <option value="Koshary">🍛 Koshary</option>
+                <option value="Shawarma">🌯 Shawarma</option>
                 <option value="Tacos">🌮 Tacos</option>
-                <option value="Pasta">🍝 Pasta</option>
                 <option value="Dessert">🍰 Dessert First!</option>
             </select>
 
-            <label style="display:block; margin-top:10px; font-weight:bold; color:#555;">What are we doing?</label>
+            <label style="display:block; margin-top:10px; font-weight:bold; color:#555; text-align:left;">What are we doing?</label>
             <select id="activity-select">
                 <option value="Movies">🎬 Movies</option>
-                <option value="Walk">🚶‍♂️ Long Walk</option>
+                <option value="Walk">🚶‍♂️ Walk by the Nile</option>
                 <option value="Arcade">🕹️ Arcade</option>
                 <option value="Museum">🏛️ Museum</option>
                 <option value="Netflix">📺 Netflix & Chill</option>
@@ -275,15 +275,17 @@
     </div>
 
     <script>
-        // --- CONFIGURATION (EDIT THIS!) ---
-        const correctPassword = "1234"; // CHANGE THIS PASSWORD
-        const yourPhoneNumber = "201278560508"; // CHANGE THIS TO YOUR PHONE NUMBER
+        // --- ⚙️ SETTINGS ---
+        const correctPassword = "1234"; 
         
-        // Image URLs
+        // I formatted your number for Egypt (added 20, removed leading 0)
+        const yourPhoneNumber = "201278560508"; 
+
+        // --- IMAGES ---
         const initialImage = "https://media.tenor.com/K2sE98y8tC0AAAAi/mocha-bear-hearts.gif";
         const successImage = "https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif";
 
-        // Reasons why you love her
+        // --- REASONS ---
         const reasons = [
             "Because you have the cutest smile.",
             "Because you always know how to make me laugh.",
@@ -294,7 +296,7 @@
             "Because you support my dreams."
         ];
 
-        // --- DOM ELEMENTS ---
+        // --- ELEMENTS ---
         const loginOverlay = document.getElementById('login-overlay');
         const mainContainer = document.getElementById('mainContainer');
         const question = document.getElementById("question");
@@ -305,40 +307,33 @@
         const initialButtons = document.getElementById("initial-buttons");
         const datePlanner = document.getElementById("date-planner");
 
-        // --- 1. LOGIN LOGIC ---
+        // --- LOGIN ---
         function checkPassword() {
             const input = document.getElementById('passwordInput').value;
-            const errorMsg = document.getElementById('error-msg');
-            
             if(input === correctPassword) {
-                // Success! Fade out overlay
                 loginOverlay.style.opacity = '0';
                 setTimeout(() => {
                     loginOverlay.style.display = 'none';
                     mainContainer.style.display = 'block';
-                    createBgHearts(); // Start animation
+                    createBgHearts();
                 }, 500);
             } else {
-                errorMsg.style.display = 'block';
-                // Shake effect
                 const inputField = document.getElementById('passwordInput');
                 inputField.style.border = "2px solid red";
+                document.getElementById('error-msg').style.display = 'block';
                 setTimeout(() => inputField.style.border = "none", 500);
             }
         }
 
-        // --- 2. REASONS WHY LOGIC ---
+        // --- REASON ---
         function showReason() {
-            // Pick a random reason
             const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
             reasonDisplay.innerText = randomReason;
-            
-            // Add a little pop effect
             reasonDisplay.style.transform = "scale(1.1)";
             setTimeout(() => reasonDisplay.style.transform = "scale(1)", 200);
         }
 
-        // --- 3. YES/NO LOGIC ---
+        // --- YES/NO LOGIC ---
         let noClickCount = 0;
         const noPhrases = ["No", "Are you sure?", "Really?", "Think again!", "Last chance!", "Please?", "I'll be sad!", "So sad..."];
 
@@ -346,49 +341,43 @@
             noClickCount++;
             const textIndex = Math.min(noClickCount, noPhrases.length - 1);
             noBtn.innerText = noPhrases[textIndex];
+            
+            // Make Yes button bigger
             const currentFontSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
             yesBtn.style.fontSize = `${currentFontSize * 1.4}px`;
         }
 
         function handleYes() {
-            // Update UI
             question.innerText = "Yay! I love you! ❤️";
             mainImage.src = successImage;
-            
-            // Hide initial buttons and reason text
             initialButtons.style.display = 'none';
             reasonDisplay.style.display = 'none';
-            
-            // Show Date Planner
             datePlanner.style.display = 'block';
-
-            // Trigger Confetti
             triggerConfetti();
         }
 
-        // --- 4. WHATSAPP LOGIC ---
+        // --- WHATSAPP SEND ---
         function sendWhatsapp() {
             const food = document.getElementById("food-select").value;
             const activity = document.getElementById("activity-select").value;
             
-            const message = `Hey! I unlocked your website and said YES! ❤️ For our date, I choose ${food} and ${activity}.`;
+            const message = `SEIFOOO!! I said YES! ❤️ For our date, I choose ${food} and ${activity}.`;
             
+            // Opens WhatsApp app directly on mobile
             const url = `https://wa.me/${yourPhoneNumber}?text=${encodeURIComponent(message)}`;
-            window.open(url, '_blank');
+            window.location.href = url;
         }
 
-        // --- 5. EFFECTS (Hearts & Confetti) ---
+        // --- EFFECTS ---
         function createBgHearts() {
             const heartBg = document.getElementById("heartBg");
             const heartEmojis = ["❤️", "💖", "💝", "💕", "💗"];
-            
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 15; i++) {
                 let heart = document.createElement("div");
                 heart.className = "heart-item";
                 heart.innerText = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
                 heart.style.left = Math.random() * 100 + "%";
-                heart.style.animationDuration = (Math.random() * 5 + 8) + "s";
-                heart.style.animationDelay = (Math.random() * 5) + "s";
+                heart.style.animationDuration = (Math.random() * 5 + 10) + "s"; 
                 heartBg.appendChild(heart);
             }
         }
@@ -398,46 +387,16 @@
                 path: 'M167 72c19,-38 37,-56 75,-56 42,0 76,33 76,75 0,42 -18,58 -76,116 -58,-58 -76,-74 -76,-116 0,-42 33,-75 75,-75 38,0 57,18 76,56z',
                 matrix: [0.03333333333333333, 0, 0, 0.03333333333333333, -5.566666666666666, -5.533333333333333]
             });
-
             const colors = ['#FFC0CB', '#FF69B4', '#FF1493', '#C71585'];
-            
-            confetti({
-                particleCount: 150,
-                spread: 100,
-                origin: { y: 0.6 },
-                shapes: [heartShape],
-                colors: colors,
-                scalar: 2
-            });
-            
-            // Loop for a few seconds
+            confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, shapes: [heartShape], colors: colors, scalar: 2 });
             let duration = 3000;
             let end = Date.now() + duration;
             (function frame() {
-                confetti({
-                    particleCount: 5,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    shapes: [heartShape],
-                    colors: colors,
-                    scalar: 2
-                });
-                confetti({
-                    particleCount: 5,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    shapes: [heartShape],
-                    colors: colors,
-                    scalar: 2
-                });
-
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, shapes: [heartShape], colors: colors, scalar: 2 });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, shapes: [heartShape], colors: colors, scalar: 2 });
                 if (Date.now() < end) requestAnimationFrame(frame);
             }());
         }
     </script>
 </body>
 </html>
-
-
