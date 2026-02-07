@@ -3,43 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Be My Valentine?</title>
+    <title>For Lara ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            background-color: #ffe6e6; /* Light pink background */
-            overflow: hidden; /* Prevents scrollbars when button gets huge */
+            background: linear-gradient(135deg, #ffe6e6 0%, #ffc3c3 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Floating Hearts Background --- */
+        .heart-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        /* We are now using text/emoji for hearts, so we style the font */
+        .heart-bg .heart-item {
+            position: absolute;
+            display: block;
+            font-size: 2rem; /* Initial size */
+            animation: floatUp 15s linear infinite;
+            bottom: -100px; /* Start below screen */
+            opacity: 0.7;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
         .container {
             text-align: center;
             position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            max-width: 90%;
+            width: 400px;
+            backdrop-filter: blur(5px);
         }
 
         h1 {
             color: #ff4d4d;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            font-family: 'Indie Flower', cursive;
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            line-height: 1.2;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         .gif-container img {
-            max-width: 300px;
+            max-width: 100%;
+            width: 250px;
             height: auto;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            margin-bottom: 25px;
         }
 
         .btn-container {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            align-items: center; /* Keeps buttons aligned as one grows */
+            gap: 15px;
+            align-items: center;
             flex-wrap: wrap;
+            margin-top: 10px;
         }
 
         button {
@@ -48,35 +91,44 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
         }
 
         #yesBtn {
-            background-color: #28a745; /* Green */
+            background: linear-gradient(to right, #ff4d4d, #ff0000);
             color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 20px rgba(255, 77, 77, 0.4);
+        }
+
+        #yesBtn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 77, 77, 0.5);
         }
 
         #noBtn {
-            background-color: #dc3545; /* Red */
-            color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background-color: #f8f9fa;
+            color: #555;
+            border: 2px solid #eee;
         }
 
         #noBtn:hover {
-            background-color: #c82333;
+            background-color: #e2e6ea;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
 
+    <div class="heart-bg" id="heartBg"></div>
+
     <div class="container">
-        <div class="gif-container" id="gifContainer">
+        <div class="gif-container">
             <img id="mainImage" src="https://media.tenor.com/K2sE98y8tC0AAAAi/mocha-bear-hearts.gif" alt="Cute bear">
         </div>
         
-        <h1 id="question"> Lara, will you be my Valentine?</h1>
+        <h1 id="question">Lara, will you be my Valentine?</h1>
         
         <div class="btn-container">
             <button id="yesBtn" onclick="handleYes()">Yes</button>
@@ -85,67 +137,95 @@
     </div>
 
     <script>
+        const successImage = "https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif"; 
         const question = document.getElementById("question");
-        const gifContainer = document.getElementById("gifContainer");
         const mainImage = document.getElementById("mainImage");
         const yesBtn = document.getElementById("yesBtn");
         const noBtn = document.getElementById("noBtn");
+        const heartBg = document.getElementById("heartBg");
 
         let noClickCount = 0;
-        
-        // Phrases to cycle through when they click No
-        const noPhrases = [
-            "No", 
-            "Are you sure?", 
-            "Really sure?", 
-            "Think again!", 
-            "Last chance!", 
-            "Surely not?", 
-            "You might regret this!", 
-            "Give it another thought!", 
-            "Are you absolutely certain?", 
-            "This could be a mistake!", 
-            "Have a heart!", 
-            "Don't be so cold!", 
-            "Change of heart?", 
-            "Wouldn't you reconsider?", 
-            "Is that your final answer?", 
-            "You're breaking my heart ;(", 
-            "Plsss? :(", 
-            "Okay, I'll stop asking...", 
-            "Just kidding, please say yes", 
-            "I'll be very sad", 
-            "I'll be very very sad"
-        ];
+        const noPhrases = ["No", "Are you sure?", "Really?", "Think again!", "Last chance!", "Surely not?", "Please?", "I'll be sad!", "So sad...", "Very sad..."];
+
+        // --- 1. FIXED BACKGROUND HEARTS ---
+        // We use pure emojis now. They are guaranteed to look like hearts.
+        function createBgHearts() {
+            const heartEmojis = ["❤️", "💖", "💝", "💕", "💗"];
+            
+            for (let i = 0; i < 20; i++) {
+                let heart = document.createElement("div");
+                heart.className = "heart-item";
+                heart.innerText = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+                
+                // Random positioning
+                heart.style.left = Math.random() * 100 + "%";
+                heart.style.animationDuration = (Math.random() * 5 + 8) + "s";
+                heart.style.animationDelay = (Math.random() * 5) + "s";
+                
+                heartBg.appendChild(heart);
+            }
+        }
+        createBgHearts();
+
+        // --- 2. FIXED CONFETTI SHAPE ---
+        // This is a simplified path that works better for the confetti library
+        var heartShape = confetti.shapeFromPath({
+            path: 'M167 72c19,-38 37,-56 75,-56 42,0 76,33 76,75 0,42 -18,58 -76,116 -58,-58 -76,-74 -76,-116 0,-42 33,-75 75,-75 38,0 57,18 76,56z',
+            matrix: [0.03333333333333333, 0, 0, 0.03333333333333333, -5.566666666666666, -5.533333333333333]
+        });
 
         function handleNo() {
             noClickCount++;
-            
-            // Change text on the No button
-            // If we run out of phrases, loop the last one or keep cycling
             const textIndex = Math.min(noClickCount, noPhrases.length - 1);
             noBtn.innerText = noPhrases[textIndex];
 
-            // Make the Yes button bigger
-            const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-            yesBtn.style.fontSize = `${currentSize * 1.5}px`;
-            
-            // Optionally increase padding to match text size
-            const currentPadding = parseFloat(window.getComputedStyle(yesBtn).padding);
-            yesBtn.style.padding = `${currentPadding * 1.2}px ${currentPadding * 1.2}px`;
+            const currentFontSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+            yesBtn.style.fontSize = `${currentFontSize * 1.4}px`;
         }
 
         function handleYes() {
-            // Change the visual to the "Success" state
             question.innerText = "Yay! I love you! ❤️";
-            
-            // Change image to kissing/happy bears
-            mainImage.src = "https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif";
-            
-            // Hide the buttons
+            mainImage.src = successImage;
             document.querySelector('.btn-container').style.display = 'none';
+
+            // Fire the confetti
+            const heartColors = ['#FFC0CB', '#FF69B4', '#FF1493', '#C71585'];
+            
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 },
+                shapes: [heartShape],
+                colors: heartColors,
+                scalar: 2 // Make them bigger so you can clearly see the shape
+            });
+            
+            // Loop for a few seconds
+            let duration = 3000;
+            let end = Date.now() + duration;
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    shapes: [heartShape],
+                    colors: heartColors,
+                    scalar: 2
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    shapes: [heartShape],
+                    colors: heartColors,
+                    scalar: 2
+                });
+
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
         }
     </script>
-
 </body>
 </html>
