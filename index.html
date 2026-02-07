@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>For Lara ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
@@ -19,53 +19,106 @@
             background: linear-gradient(135deg, #ffe6e6 0%, #ffc3c3 100%);
             overflow: hidden;
             position: relative;
-            /* Prevent bounce scrolling on mobile */
             overscroll-behavior: none;
+            user-select: none; 
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- Login Screen Styles --- */
-        #login-overlay {
+        /* --- 🎮 GAME OVERLAY --- */
+        #game-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
+            z-index: 2000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: white;
-            padding: 20px;
-            box-sizing: border-box;
             text-align: center;
+            transition: opacity 0.5s ease;
         }
 
-        #login-overlay input {
-            padding: 15px;
-            font-size: 1.2rem;
-            border-radius: 10px;
-            border: none;
-            outline: none;
-            margin: 20px 0;
-            text-align: center;
-            width: 80%; /* Mobile friendly width */
+        /* STAGE 1: MASH METER */
+        #mash-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            transition: opacity 0.5s;
+        }
+
+        .meter-box {
+            width: 80%;
             max-width: 300px;
+            height: 40px;
+            background: #333;
+            border: 4px solid white;
+            border-radius: 25px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 20px rgba(255, 77, 77, 0.6);
         }
 
-        #login-overlay button {
-            background-color: #ff4d4d;
+        #meter-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #ff4d4d, #ff0080);
+            transition: width 0.1s linear;
+        }
+
+        #mash-btn {
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, #ff4d4d, #cc0000);
+            border-radius: 50%;
+            border: 6px solid white;
             color: white;
-            padding: 15px 40px; /* Larger touch area */
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: 800;
             cursor: pointer;
-            font-weight: bold;
+            box-shadow: 0 10px 0 #990000, 0 10px 20px rgba(0,0,0,0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: manipulation; 
         }
 
-        /* --- Floating Background Hearts --- */
+        #mash-btn:active {
+            transform: translateY(8px);
+            box-shadow: 0 2px 0 #990000, inset 0 5px 10px rgba(0,0,0,0.4);
+        }
+
+        /* STAGE 2: CATCHER */
+        #catcher-container {
+            display: none; 
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .catch-heart {
+            position: absolute;
+            font-size: 3.5rem; 
+            cursor: pointer;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- Background --- */
         .heart-bg {
             position: absolute;
             width: 100%;
@@ -89,7 +142,7 @@
             100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
         }
 
-        /* --- Main Content Container --- */
+        /* --- Main Container --- */
         .container {
             text-align: center;
             position: relative;
@@ -98,34 +151,31 @@
             padding: 30px 20px;
             border-radius: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            
-            /* Mobile Optimization: Fits 90% of screen but not too wide */
             width: 90%; 
             max-width: 400px;
-            
             backdrop-filter: blur(5px);
-            display: none; /* Hidden until login */
-            transition: transform 0.3s ease;
+            display: none; 
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         h1 {
             color: #ff4d4d;
             font-family: 'Indie Flower', cursive;
-            font-size: 2.2rem; /* Slightly smaller for mobile safety */
+            font-size: 2.2rem;
             margin-bottom: 20px;
             line-height: 1.2;
         }
 
         .gif-container img {
             max-width: 100%;
-            width: 220px; /* Good size for phones */
+            width: 220px;
             height: auto;
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             margin-bottom: 15px;
         }
 
-        /* --- Button Container --- */
         .btn-container {
             display: flex;
             justify-content: center;
@@ -144,9 +194,6 @@
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             font-weight: 600;
             font-family: 'Poppins', sans-serif;
-            /* Prevent text selection on mobile taps */
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
         }
 
         #yesBtn {
@@ -161,13 +208,12 @@
             border: 2px solid #eee;
         }
 
-        /* --- "Reasons Why" Button --- */
         #reasonBtn {
             background-color: #fff;
             color: #ff4d4d;
             border: 2px solid #ff4d4d;
             margin-top: 15px;
-            width: 100%; /* Full width on mobile looks better */
+            width: 100%;
             font-size: 0.9rem;
             padding: 10px;
         }
@@ -182,7 +228,7 @@
             line-height: 1.3;
         }
 
-        /* --- Date Planner Section --- */
+        /* --- Date Planner --- */
         #date-planner {
             display: none;
             margin-top: 20px;
@@ -196,7 +242,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        select {
+        select, input[type="text"] {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
@@ -204,7 +250,26 @@
             border: 1px solid #ff4d4d;
             font-family: 'Poppins', sans-serif;
             background: white;
-            font-size: 1rem; /* Prevents auto-zoom on iPhone */
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        #cinema-link-btn {
+            display: none;
+            background-color: #3b82f6;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        #sub-options-container, #extra-input-container {
+            display: none;
         }
 
         .whatsapp-btn {
@@ -215,17 +280,33 @@
             padding: 15px;
             font-size: 1.2rem;
             box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div id="login-overlay">
-        <h2 style="font-family: 'Indie Flower'; font-size: 2.5rem; margin-bottom: 10px;">Lara's Login</h2>
-        <p style="opacity: 0.8; margin-bottom: 20px;">Enter password to unlock ❤️</p>
-        <input type="password" id="passwordInput" placeholder="Password (Hint: 1234)">
-        <button onclick="checkPassword()">Unlock</button>
-        <p id="error-msg" style="color: #ff6b6b; display: none; margin-top: 10px;">Wrong password! Try "1234"</p>
+    <div id="game-overlay">
+        
+        <div id="mash-container">
+            <h2 style="font-family: 'Indie Flower'; font-size: 2rem; margin-bottom: 10px;">Pump the Love! ❤️</h2>
+            <p style="margin-bottom: 20px;">Tap FAST to fill the meter!</p>
+            
+            <div class="meter-box">
+                <div id="meter-fill"></div>
+            </div>
+            
+            <div id="mash-btn" onmousedown="mashButton(event)" ontouchstart="mashButton(event)">TAP!</div>
+        </div>
+
+        <div id="catcher-container">
+            <h2 id="catch-title" style="font-family: 'Indie Flower'; font-size: 2rem; margin-top: 50px;">Catch the Hearts!</h2>
+            <p id="catch-counter" style="font-size: 1.5rem; font-weight: bold;">0 / 10</p>
+        </div>
+
     </div>
 
     <div class="heart-bg" id="heartBg"></div>
@@ -233,7 +314,7 @@
     <div class="container" id="mainContainer">
         
         <div class="gif-container">
-            <img id="mainImage" src="https://media.tenor.com/K2sE98y8tC0AAAAi/mocha-bear-hearts.gif" alt="Cute bear">
+            <img id="mainImage" src="image.png" alt="Cute bear">
         </div>
         
         <h1 id="question">Lara, will you be my Valentine?</h1>
@@ -249,56 +330,283 @@
         <div id="date-planner">
             <h3 style="color: #ff4d4d; font-family: 'Indie Flower'; margin: 0;">Plan our Date!</h3>
             
-            <label style="display:block; margin-top:15px; font-weight:bold; color:#555; text-align:left;">What are we eating?</label>
-            <select id="food-select">
-                <option value="Sushi">🍣 Sushi</option>
-                <option value="Pizza">🍕 Pizza</option>
-                <option value="Burgers">🍔 Burgers</option>
-                <option value="Koshary">🍛 Koshary</option>
-                <option value="Shawarma">🌯 Shawarma</option>
-                <option value="Tacos">🌮 Tacos</option>
-                <option value="Dessert">🍰 Dessert First!</option>
+            <label style="display:block; margin-top:15px; font-weight:bold; color:#555; text-align:left;">What are we doing first?</label>
+            <select id="main-activity-select" onchange="updateSubOptions()">
+                <option value="" disabled selected>Tap to choose...</option>
+                <option value="Dine Out">🍽️ Dine Out</option>
+                <option value="Cinema">🎬 Cinema</option>
+                <option value="Car Ride">🚗 Car Ride</option>
+                <option value="Coffee Date">☕ Coffee Date</option>
+                <option value="Beach Date">🌊 Beach Date</option>
+                <option value="Surprise Me">🎁 Surprise Me</option>
+                <option value="Other">💡 I have another idea</option>
             </select>
 
-            <label style="display:block; margin-top:10px; font-weight:bold; color:#555; text-align:left;">What are we doing?</label>
-            <select id="activity-select">
-                <option value="Movies">🎬 Movies</option>
-                <option value="Walk">🚶‍♂️ Walk by the Nile</option>
-                <option value="Arcade">🕹️ Arcade</option>
-                <option value="Museum">🏛️ Museum</option>
-                <option value="Netflix">📺 Netflix & Chill</option>
-                <option value="Surprise">🎁 Surprise Me!</option>
-            </select>
+            <div id="sub-options-container">
+                <label id="sub-label" style="display:block; margin-top:10px; font-weight:bold; color:#555; text-align:left;">Details?</label>
+                <select id="sub-activity-select" onchange="handleSubSelection()">
+                    </select>
+            </div>
 
-            <button class="whatsapp-btn" onclick="sendWhatsapp()">Send to Me 💌</button>
+            <a id="cinema-link-btn" href="#" target="_blank">🍿 Check Movies & Showtimes</a>
+
+            <div id="extra-input-container">
+                <input type="text" id="extra-input" placeholder="Type here...">
+            </div>
+
+            <button class="whatsapp-btn" onclick="sendWhatsapp()">Send to Seifoo 💌</button>
         </div>
     </div>
 
     <script>
         // --- ⚙️ SETTINGS ---
-        const correctPassword = "1234"; 
-        
-        // I formatted your number for Egypt (added 20, removed leading 0)
         const yourPhoneNumber = "201278560508"; 
 
-        // --- IMAGES ---
-        const initialImage = "https://media.tenor.com/K2sE98y8tC0AAAAi/mocha-bear-hearts.gif";
-        const successImage = "https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif";
-
-        // --- REASONS ---
-        const reasons = [
-            "Because you have the cutest smile.",
-            "Because you always know how to make me laugh.",
-            "Because you give the best hugs.",
-            "Because you're my best friend.",
-            "Because you're smart and beautiful.",
-            "Because life is just better with you.",
-            "Because you support my dreams."
-        ];
+        // --- 🎮 GAME VARIABLES ---
+        let loveMeter = 0;
+        let decayRate = 0.4; 
+        let gameActive = true;
+        let heartsCaught = 0;
+        const heartsToCatch = 10;
+        let spawnInterval;
 
         // --- ELEMENTS ---
-        const loginOverlay = document.getElementById('login-overlay');
+        const gameOverlay = document.getElementById('game-overlay');
+        const mashContainer = document.getElementById('mash-container');
+        const catcherContainer = document.getElementById('catcher-container');
+        const meterFill = document.getElementById('meter-fill');
+        const catchCounter = document.getElementById('catch-counter');
         const mainContainer = document.getElementById('mainContainer');
+        const mashBtn = document.getElementById('mash-btn');
+
+        // --- GAME LOOP ---
+        setInterval(() => {
+            if (gameActive && loveMeter > 0 && loveMeter < 100) {
+                loveMeter -= decayRate;
+                if (loveMeter < 0) loveMeter = 0;
+                updateMeter();
+            }
+        }, 50);
+
+        // --- STAGE 1: MASH ---
+        function mashButton(event) {
+            // Stop zoom/scroll on rapid taps
+            if (event) event.preventDefault();
+            
+            if (!gameActive) return;
+            
+            // Increment
+            loveMeter += 15; 
+            
+            // Visual bounce
+            mashBtn.style.transform = "scale(0.95)";
+            setTimeout(() => mashBtn.style.transform = "scale(1)", 50);
+
+            // Win condition
+            if (loveMeter >= 95) {
+                loveMeter = 100;
+                updateMeter();
+                winStage1();
+            } else {
+                updateMeter();
+            }
+        }
+
+        function updateMeter() {
+            meterFill.style.width = loveMeter + "%";
+        }
+
+        function winStage1() {
+            if (!gameActive) return; // Prevent double firing
+            gameActive = false;
+            
+            // Visual success indicator
+            mashBtn.style.background = "#28a745"; // Green
+            mashBtn.innerText = "GO!";
+            mashBtn.style.boxShadow = "0 0 20px #28a745";
+
+            // Try to fire confetti
+            try {
+                triggerConfetti();
+            } catch(e) {
+                console.log("Confetti failed, continuing anyway");
+            }
+            
+            // Force transition
+            setTimeout(() => {
+                mashContainer.style.opacity = '0';
+                setTimeout(() => {
+                    mashContainer.style.display = 'none';
+                    startStage2();
+                }, 500);
+            }, 800);
+        }
+
+        // --- STAGE 2: CATCHER ---
+        function startStage2() {
+            catcherContainer.style.display = 'block';
+            setTimeout(() => catcherContainer.style.opacity = '1', 50);
+            spawnInterval = setInterval(spawnHeart, 500);
+        }
+
+        function spawnHeart() {
+            if (heartsCaught >= heartsToCatch) return;
+
+            const heart = document.createElement('div');
+            heart.classList.add('catch-heart');
+            heart.innerText = "❤️";
+            
+            const x = Math.random() * (window.innerWidth - 80) + 20;
+            const y = Math.random() * (window.innerHeight - 150) + 50;
+            
+            heart.style.left = x + "px";
+            heart.style.top = y + "px";
+            
+            const catchIt = (e) => {
+                if(e) e.preventDefault();
+                catchHeart(heart);
+            };
+            heart.onmousedown = catchIt;
+            heart.ontouchstart = catchIt;
+
+            catcherContainer.appendChild(heart);
+
+            setTimeout(() => {
+                if(heart.parentNode) heart.remove();
+            }, 1200);
+        }
+
+        function catchHeart(element) {
+            if (!element.parentNode) return; 
+            
+            element.remove();
+            heartsCaught++;
+            catchCounter.innerText = `${heartsCaught} / ${heartsToCatch}`;
+            
+            catchCounter.style.transform = "scale(1.3)";
+            setTimeout(() => catchCounter.style.transform = "scale(1)", 100);
+
+            if (heartsCaught >= heartsToCatch) {
+                winGame();
+            }
+        }
+
+        function winGame() {
+            clearInterval(spawnInterval);
+            
+            gameOverlay.style.opacity = '0';
+            setTimeout(() => {
+                gameOverlay.style.display = 'none';
+                mainContainer.style.display = 'block';
+                createBgHearts();
+                try { triggerConfetti(); } catch(e){}
+            }, 500);
+        }
+
+        // --- ⚙️ DATE PLANNER LOGIC ---
+        const activities = {
+            "Dine Out": {
+                label: "What are we eating?",
+                options: ["Sushi 🍣", "Pizza 🍕", "Burgers 🍔", "Seafood 🐟", "Koshary 🍛", "Pasta 🍝", "I have another idea 💡"]
+            },
+            "Cinema": {
+                label: "Which Cinema?",
+                options: ["Vox Cinema (City Centre)", "Green Plaza Cinema", "San Stefano Cinema"]
+            },
+            "Car Ride": { label: null, options: [] },
+            "Coffee Date": {
+                label: "Where to?",
+                options: ["Dunkin' Stanley 🍩", "Dunkin' Roushdy 🍩", "Kato ☕", "I have another idea 💡", "Surprise Me ✨"]
+            },
+            "Beach Date": { label: null, options: [] },
+            "Surprise Me": {
+                label: "What vibe are you going for?",
+                options: ["Trust you 100% 🙈", "Something Chill ❄️", "Something Fancy ✨", "Something Crazy 🤪"]
+            },
+            "Other": {
+                label: null,
+                options: []
+            }
+        };
+
+        const cinemaLinks = {
+            "Vox Cinema (City Centre)": "https://egy.voxcinemas.com/showtimes?c=city-centre-alexandria",
+            "Green Plaza Cinema": "https://elcinema.com/en/theater/3101049/",
+            "San Stefano Cinema": "https://rnscinemas.com/en/cinemas/san_stephano"
+        };
+
+        const subOptionsContainer = document.getElementById("sub-options-container");
+        const subActivitySelect = document.getElementById("sub-activity-select");
+        const subLabel = document.getElementById("sub-label");
+        const cinemaLinkBtn = document.getElementById("cinema-link-btn");
+        const extraInputContainer = document.getElementById("extra-input-container");
+        const extraInput = document.getElementById("extra-input");
+
+        function updateSubOptions() {
+            const mainSelect = document.getElementById("main-activity-select");
+            const selectedActivity = mainSelect.value;
+            const data = activities[selectedActivity];
+
+            // Reset
+            subOptionsContainer.style.display = "none";
+            cinemaLinkBtn.style.display = "none";
+            extraInputContainer.style.display = "none";
+            subActivitySelect.innerHTML = ""; 
+
+            // Handle "Other" main activity immediately
+            if (selectedActivity === "Other") {
+                extraInputContainer.style.display = "block";
+                extraInput.placeholder = "What's the plan? 💭";
+                extraInput.value = "";
+                return;
+            }
+
+            if (data && data.options.length > 0) {
+                subOptionsContainer.style.display = "block";
+                subLabel.innerText = data.label;
+                
+                let defaultOpt = document.createElement("option");
+                defaultOpt.value = "";
+                defaultOpt.text = "Select...";
+                defaultOpt.disabled = true;
+                defaultOpt.selected = true;
+                subActivitySelect.appendChild(defaultOpt);
+
+                data.options.forEach(option => {
+                    const optElement = document.createElement("option");
+                    optElement.value = option;
+                    optElement.innerText = option;
+                    subActivitySelect.appendChild(optElement);
+                });
+            }
+        }
+
+        function handleSubSelection() {
+            const mainActivity = document.getElementById("main-activity-select").value;
+            const subActivity = subActivitySelect.value;
+
+            cinemaLinkBtn.style.display = "none";
+            extraInputContainer.style.display = "none";
+
+            if (mainActivity === "Cinema") {
+                const link = cinemaLinks[subActivity];
+                if (link) {
+                    cinemaLinkBtn.href = link;
+                    cinemaLinkBtn.style.display = "block"; 
+                    extraInputContainer.style.display = "block";
+                    extraInput.placeholder = "Which movie and what time? 🕒";
+                    extraInput.value = ""; 
+                }
+            }
+            
+            if ((mainActivity === "Coffee Date" || mainActivity === "Dine Out") && subActivity.includes("another idea")) {
+                extraInputContainer.style.display = "block";
+                extraInput.placeholder = "Tell me where? 💭";
+                extraInput.value = "";
+            }
+        }
+
+        // --- YES/NO & EFFECTS ---
         const question = document.getElementById("question");
         const mainImage = document.getElementById("mainImage");
         const yesBtn = document.getElementById("yesBtn");
@@ -307,33 +615,6 @@
         const initialButtons = document.getElementById("initial-buttons");
         const datePlanner = document.getElementById("date-planner");
 
-        // --- LOGIN ---
-        function checkPassword() {
-            const input = document.getElementById('passwordInput').value;
-            if(input === correctPassword) {
-                loginOverlay.style.opacity = '0';
-                setTimeout(() => {
-                    loginOverlay.style.display = 'none';
-                    mainContainer.style.display = 'block';
-                    createBgHearts();
-                }, 500);
-            } else {
-                const inputField = document.getElementById('passwordInput');
-                inputField.style.border = "2px solid red";
-                document.getElementById('error-msg').style.display = 'block';
-                setTimeout(() => inputField.style.border = "none", 500);
-            }
-        }
-
-        // --- REASON ---
-        function showReason() {
-            const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
-            reasonDisplay.innerText = randomReason;
-            reasonDisplay.style.transform = "scale(1.1)";
-            setTimeout(() => reasonDisplay.style.transform = "scale(1)", 200);
-        }
-
-        // --- YES/NO LOGIC ---
         let noClickCount = 0;
         const noPhrases = ["No", "Are you sure?", "Really?", "Think again!", "Last chance!", "Please?", "I'll be sad!", "So sad..."];
 
@@ -341,34 +622,44 @@
             noClickCount++;
             const textIndex = Math.min(noClickCount, noPhrases.length - 1);
             noBtn.innerText = noPhrases[textIndex];
-            
-            // Make Yes button bigger
-            const currentFontSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-            yesBtn.style.fontSize = `${currentFontSize * 1.4}px`;
         }
 
         function handleYes() {
             question.innerText = "Yay! I love you! ❤️";
-            mainImage.src = successImage;
+            mainImage.src = "https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif";
             initialButtons.style.display = 'none';
             reasonDisplay.style.display = 'none';
             datePlanner.style.display = 'block';
-            triggerConfetti();
+            try { triggerConfetti(); } catch(e){}
         }
 
-        // --- WHATSAPP SEND ---
+        const reasons = ["Because you have the cutest smile.", "Because you always know how to make me laugh.", "Because you give the best hugs.", "Because you're my best friend.", "Because you're smart and beautiful.", "Because life is just better with you.", "Because you support my dreams."];
+
+        function showReason() {
+            const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
+            reasonDisplay.innerText = randomReason;
+            reasonDisplay.style.transform = "scale(1.1)";
+            setTimeout(() => reasonDisplay.style.transform = "scale(1)", 200);
+        }
+
         function sendWhatsapp() {
-            const food = document.getElementById("food-select").value;
-            const activity = document.getElementById("activity-select").value;
+            const mainActivity = document.getElementById("main-activity-select").value;
+            const subActivity = subActivitySelect.value;
+            const extraText = document.getElementById("extra-input").value;
             
-            const message = `SEIFOOO!! I said YES! ❤️ For our date, I choose ${food} and ${activity}.`;
+            if(!mainActivity) {
+                alert("Please choose an activity first! 😊");
+                return;
+            }
+
+            let message = `SEIFOOO!! I said YES! ❤️ For our date, I choose ${mainActivity}`;
+            if (subActivity && subActivity !== "Select...") message += ` (${subActivity})`;
+            if (extraText) message += ` and specifically: ${extraText}`;
+            message += `.`;
             
-            // Opens WhatsApp app directly on mobile
-            const url = `https://wa.me/${yourPhoneNumber}?text=${encodeURIComponent(message)}`;
-            window.location.href = url;
+            window.location.href = `https://wa.me/${yourPhoneNumber}?text=${encodeURIComponent(message)}`;
         }
 
-        // --- EFFECTS ---
         function createBgHearts() {
             const heartBg = document.getElementById("heartBg");
             const heartEmojis = ["❤️", "💖", "💝", "💕", "💗"];
@@ -383,19 +674,8 @@
         }
 
         function triggerConfetti() {
-            const heartShape = confetti.shapeFromPath({
-                path: 'M167 72c19,-38 37,-56 75,-56 42,0 76,33 76,75 0,42 -18,58 -76,116 -58,-58 -76,-74 -76,-116 0,-42 33,-75 75,-75 38,0 57,18 76,56z',
-                matrix: [0.03333333333333333, 0, 0, 0.03333333333333333, -5.566666666666666, -5.533333333333333]
-            });
             const colors = ['#FFC0CB', '#FF69B4', '#FF1493', '#C71585'];
-            confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, shapes: [heartShape], colors: colors, scalar: 2 });
-            let duration = 3000;
-            let end = Date.now() + duration;
-            (function frame() {
-                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, shapes: [heartShape], colors: colors, scalar: 2 });
-                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, shapes: [heartShape], colors: colors, scalar: 2 });
-                if (Date.now() < end) requestAnimationFrame(frame);
-            }());
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: colors });
         }
     </script>
 </body>
